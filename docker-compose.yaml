@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  backend_sv:
+    #image: backend_sv1.0
+    container_name: backend_sv
+    build:
+      context: ./backend
+      dockerfile: ./dev.Dockerfile
+    ports:
+     - "3333:3333"
+    volumes:
+      - ./backend/:/app
+    #volumes:
+      # - nodemodules:/usr/local/app/node_modules
+      # - ./backend:/app
+    #env_file: .env
+    environment:
+      REDIS_CLUSTER: "redis-node-1:6377,redis-node-2:6378,redis-node-3:6379"
+      PORT: 3333
+      OPERATORCODE: "sunt"
+      SECRET_KEY: "5a93fe30fc616d9de5f139e6676f1167"
+      MONGODB: "mongodb://adfin:123456@mongodb:27017/?maxPoolSize=20&w=majority"
+      API_ENDPOINT: http://gsmd.336699bet.com
+      LOG_ENDPOINT: http://gslog.336699bet.com
+    networks:
+      - traefik_web
+
+  frontend:
+    container_name: frontend_sv
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/next-app/:/app
+      - /app/node_modules
+      - /app/.next
+
+# volumes:
+#   nodemodules:
+  
+networks:
+  traefik_web:
+    external: true
+

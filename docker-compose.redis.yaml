@@ -1,0 +1,68 @@
+version: '3.7'
+services:
+  redis_commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis_web
+    environment:
+      REDIS_HOSTS: "local:redis-node-1:6377,local:redis-node-2:6378,local:redis-node-3:6379"
+    ports:
+      - "5000:8081"
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-cluster
+    networks:
+      - traefik_web
+
+  redis-cluster:
+    image: 'redis:6.0-alpine'
+    command: redis-cli --cluster create 127.0.0.1:6377 127.0.0.1:6378 127.0.0.1:6379 --cluster-replicas 1 --cluster-yes
+    depends_on:
+          - redis-node-1
+          - redis-node-2
+          - redis-node-3
+   
+  redis-node-1:
+    image: 'redis:6.0-alpine'
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - '6377:6377'
+    volumes:
+      - redis-node-1-data:/var/lib/redis
+      - ./redis/redis-node-1.conf:/usr/local/etc/redis/redis.conf
+    networks:
+        - traefik_web
+
+  redis-node-2:
+    image: 'redis:6.0-alpine'
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - '6378:6378'
+    volumes:
+      - redis-node-1-data:/var/lib/redis
+      - ./redis/redis-node-2.conf:/usr/local/etc/redis/redis.conf
+    networks:
+        - traefik_web
+  
+  redis-node-3:
+    image: 'redis:6.0-alpine'
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-node-1-data:/var/lib/redis
+      - ./redis/redis-node-3.conf:/usr/local/etc/redis/redis.conf
+    networks:
+        - traefik_web
+
+volumes:
+  db-data:
+  redis-node-1-data:
+  redis-node-2-data:
+  redis-node-3-data:
+  
+networks:
+  traefik_web:
+    external: true
+

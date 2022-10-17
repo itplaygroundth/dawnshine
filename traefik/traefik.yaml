@@ -1,0 +1,22 @@
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: "websecure"
+          scheme: https
+          permanent: true
+  websecure:
+    address: :443
+
+providers:
+  #docker: {}
+  file:
+     filename: routes.yaml
+     watch: true
+

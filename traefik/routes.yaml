@@ -1,0 +1,32 @@
+http:
+  middlewares:
+    test-ipwhitelist:
+      ipWhiteList:
+        sourceRange:
+          - "192.168.1.1/32"
+          - "52.192.178.216"
+  routers:
+    whoami:
+      entryPoints:
+         - "websecure"
+      rule: "HostRegexp(`lab.lan`, `{subdomain:[a-z]+}.lab.lan`)" #"Host(`whoami.lab.lan`)"
+      service: allbackend
+      tls: {}
+    # frontend:
+    #   entryPoints:
+    #     - "websecure"
+    #   rule: "Host(`frontend.lab.lan`)"
+    #   service: frontend
+    #   tls: {}
+
+  services:
+    allbackend:
+      loadBalancer:
+        servers:
+          - url: "http://backend_sv:3333/"
+          # - url: "http://bank_sv2:3334/"
+          # - url: "http://bank_sv2:3335/"
+    # frontend:
+    #   loadBalancer:
+    #     server:
+    #       - url: "http://localhost:3000"
