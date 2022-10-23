@@ -62,6 +62,20 @@ func GetUserBalance(c *fiber.Ctx) error {
 			return (c.JSON(responses.UserResponse{Status: http.StatusBadRequest,Message: errMsg,Data: &fiber.Map{"errCode": errCode,"errMsg":errMsg}}))
 		 
 		}
+		mod := mongo.IndexModel{
+			Keys: bson.M{
+			"userid": 1, // index in ascending order
+			}, Options: nil,
+			}
+		ind, err = col.Indexes().CreateOne(ctx, mod)
+		if err != nil {
+			fmt.Println("Indexes().CreateOne() ERROR:", err)
+			os.Exit(1) // exit in case of error
+			} else {
+			// API call returns string of the index name
+			fmt.Println("CreateOne() index:", ind)
+			fmt.Println("CreateOne() type:", reflect.TypeOf(ind), "\n")
+			}
 		return c.JSON(responses.UserResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": resp.Body()}})
 }
 

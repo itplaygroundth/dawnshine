@@ -1,0 +1,3 @@
+    REDIS_CLUSTER= "redis-node-1:6377,redis-node-2:6378,redis-node-3:6379"
+    PORT= 3333
+    MONGODB="mongodb://adfin:123456@mongodb:27017/?maxPoolSize=20&w=majority"

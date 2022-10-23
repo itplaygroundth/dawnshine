@@ -86,14 +86,28 @@ func CreateUser(c *fiber.Ctx) error {
         return (c.JSON(responses.UserResponse{Status: http.StatusBadRequest,Message: errMsg,Data: &fiber.Map{"errCode": errCode,"errMsg":errMsg}}))
      
     }
-
-	result,err := userCollection.InsertOne(ctx,newUser)
+   
+	result,err = userCollection.InsertOne(ctx,newUser)
 	if err!= nil {
 		c.Status(fiber.StatusBadRequest)
         return (c.JSON(responses.UserResponse{Status: http.StatusBadRequest,Message: "eror",Data: &fiber.Map{"data":err.Error()}}))
 
 	}
-  
+
+    mod := mongo.IndexModel{
+        Keys: bson.M{
+        "id": 1, // index in ascending order
+        }, Options: nil,
+        }
+    ind, err = col.Indexes().CreateOne(ctx, mod)
+    if err != nil {
+        fmt.Println("Indexes().CreateOne() ERROR:", err)
+        os.Exit(1) // exit in case of error
+        } else {
+        // API call returns string of the index name
+        fmt.Println("CreateOne() index:", ind)
+        fmt.Println("CreateOne() type:", reflect.TypeOf(ind), "\n")
+        }
     
     return c.JSON(responses.UserResponse{Status: http.StatusCreated,Message: "success",Data: &fiber.Map{"data":result}})		
 

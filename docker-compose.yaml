@@ -4,12 +4,12 @@ services:
     #image: backend_sv1.0
     container_name: backend_sv
     build:
-      context: ./backend
+      context: ./backend_m
       dockerfile: ./dev.Dockerfile
     ports:
      - "3333:3333"
     volumes:
-      - ./backend/:/app
+      - ./backend_m/:/app
     #volumes:
       # - nodemodules:/usr/local/app/node_modules
       # - ./backend:/app
@@ -19,6 +19,7 @@ services:
       PORT: 3333
       OPERATORCODE: "sunt"
       SECRET_KEY: "5a93fe30fc616d9de5f139e6676f1167"
+      DB_CONNECTION: "root:helloworld@tcp(db:3306)/asiagaming?parseTime=true"
       MONGODB: "mongodb://adfin:123456@mongodb:27017/?maxPoolSize=20&w=majority"
       API_ENDPOINT: http://gsmd.336699bet.com
       LOG_ENDPOINT: http://gslog.336699bet.com
@@ -26,16 +27,25 @@ services:
       - traefik_web
 
   frontend:
+    #command: /bin/sh -c "while sleep 1000; do :; done"'
     container_name: frontend_sv
     build:
-      context: ./frontend
-      dockerfile: ./Dockerfile
+      context: ./frontend/next-app
+      dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - 3000:3000
+    command: ["yarn", "dev"]
+    environment:
+      - "NODE_ENV=development"
+    stdin_open: true
+    tty: true
     volumes:
-      - ./frontend/next-app/:/app
+      - ./frontend/next-app:/app
       - /app/node_modules
       - /app/.next
+    networks:
+      - traefik_web
+
 
 # volumes:
 #   nodemodules:
@@ -43,4 +53,5 @@ services:
 networks:
   traefik_web:
     external: true
+    driver: bridge
 
