@@ -3,8 +3,6 @@ dcnet:
 	docker network create  -d bridge traefik_web
 
 dcupdb:
-	service nginx stop
-	service code-server stop
 	docker-compose -f docker-compose.mydb.yaml -f docker-compose.traefik.yaml -f docker-compose.redis.yaml up -d
 
 downdb:

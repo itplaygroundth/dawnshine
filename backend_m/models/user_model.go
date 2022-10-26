@@ -13,7 +13,8 @@ type User struct {
 	Password string  
 	Balance float32  
 	OperatorCode string  
-	Signature string  
+	Signature string
+	Isadmin bool `gorm:"type:bool;default:false"`
 }
 
 type Balance struct {

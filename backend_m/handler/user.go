@@ -32,6 +32,60 @@ func  Root(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).SendString("Hello there!")
 }
 
+
+// AdminLogin godoc
+// @Summary Admin Login
+// @Description Login for Admin
+// @Accept  json
+// @Produce  json
+// @Tags Item
+// @Param id path int true "Item ID"
+// @Success 200 {object} Item
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
+// @Router /login [post]
+
+
+func AdminLogin(c *fiber.Ctx) error {
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+  //  userId := c.Params("userId")    
+ 
+    user := users.User{}
+    if err := c.BodyParser(&user); err!= nil {
+        return c.JSON(responses.UserResponse{Status: http.StatusInternalServerError,Message: "eror",Data: &fiber.Map{"data":err.Error()}})
+ 
+   }
+ 
+    result := configs.DB.WithContext(ctx).Where("Name=? and Isadmin=1",user.Username).First(&user)
+    if result.Error != nil  {
+        return c.JSON(responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": result.Error.Error()}})
+    }
+  
+     return c.JSON(responses.UserResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": user}})
+}
+
+func  UserLogin(c *fiber.Ctx) error {
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+  //  userId := c.Params("userId")    
+ 
+    user := users.User{}
+    if err := c.BodyParser(&user); err!= nil {
+        return c.JSON(responses.UserResponse{Status: http.StatusInternalServerError,Message: "eror",Data: &fiber.Map{"data":err.Error()}})
+ 
+   }
+   
+    result := configs.DB.WithContext(ctx).Where("Name=? and Password=?",user.Username,user.Password).Find(&user)
+    if result.Error != nil  {
+        return c.JSON(responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": result.Error.Error()}})
+    }
+  
+     return c.JSON(responses.UserResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": user}})
+ }
+
+
  func  GetAUser(c *fiber.Ctx) error {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()

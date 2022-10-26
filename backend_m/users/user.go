@@ -7,12 +7,15 @@ type User struct {
 	gorm.Model
 	ID uint64 `gorm:"primaryKey;autoIncrement:true"`
 	Name string  `gorm:"primaryKey"`    
+	Username string
 	Location string  
 	Title	 string 
 	Password string  
 	Balance float32  
 	OperatorCode string  
-	Signature string  
+	Signature string
+	Status bool `gorm:"type:bool;default:true"`
+	Isadmin bool `gorm:"type:bool;default:false"`
 }
 
 type Balance struct {

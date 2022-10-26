@@ -10,6 +10,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	// "github.com/swaggo/swag/cmd/swag"
+    // "github.com/arsmn/fiber-swagger/v2"
 	"cryptjoshi/configs"
     "cryptjoshi/users"
 	"cryptjoshi/routes" 
@@ -17,7 +19,21 @@ import (
 	//"cryptjoshi/handler"
 
 )
+// @title APIs
+// @version 1.0
+// @description This is a sample server server.
+// @termsOfService https://bkkdragon.magic/
 
+// @contact.name API Support
+// @contact.url https://bkkdragon.magic/
+// @contact.email drfate@bkkdragon.magic
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host code.lab.lan
+// @BasePath /
+// @schemes https
 
 func initDB() *gorm.DB{
 	dial := mysql.Open(os.Getenv("DB_CONNECTION"))
@@ -39,8 +55,8 @@ func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 	app.Use(favicon.New())
-	app.Use(cors.New())
-	
+ 
+ 
 	app.Use(cors.New(cors.Config{
 	  AllowOrigins: "*",
 	  AllowHeaders:  "Origin, Content-Type, Accept",
@@ -60,6 +76,10 @@ func main() {
 	// app.Put("/users/:userid",UserAPI.Edit)
 	// app.Delete("/users/:userid",UserAPI.Delete)
 	//log.Fatal(&handler)
+	// app.Get("/swagger/*", swagger.New(swagger.Config{ // custom
+	// 	URL:         "/swagger/doc.json",
+	// 	DeepLinking: false,
+	// }))
     routes.SetupRoute(app)
  
     log.Fatal(app.Listen(":3333"))

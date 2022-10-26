@@ -24,10 +24,12 @@ func  SetupRoute(e *fiber.App) {
  
 	// e.Get("/",app.Root)
 	e.Put("/user/:userId",handler.EditAUser)
+	e.Post("/login",handler.UserLogin)
+	e.Post("/admin",handler.AdminLogin)
 	e.Get("/users", handler.GetAllUsers) 
 	e.Get("/user/:userId",handler.GetAUser)
 	e.Get("/user/balance/:userId", handler.UserBalance)
-    e.Post("/adduser",handler.CreateUser)
+    e.Post("/register",handler.CreateUser)
 	e.Delete("/user/:userId",handler.DeleteAUser)
 	// e.Post("/user/passwd/:userId",handler.ChangePassword)
 	// e.Get("/user/transaction/:userId",handler.Transaction)
@@ -41,13 +43,13 @@ func  SetupRoute(e *fiber.App) {
 	e.Get("/demogame/:provider/:gametype",handler.LuanchDGame)
 	e.Get("/playgame/:userId/:provider/:gametype",handler.LuanchGame)
 	// e.Put("/provider/:providerId",handler.EditAProvider)
-	// e.Get("/providers", handler.GetAllProviders) 
+	e.Get("/provider", handler.GetAllProviders) 
 	// e.Get("/provider/:providerId",handler.GetAProvider)
 	// e.Post("/addprovider",handler.CreateProvider)
 	// e.Delete("/provider/:providerId",handler.DeleteAProivder)
 
 	//seamless
-	//e.Post("/seamless/wallet/getuserbalance", handler.GetUserBalance)
+	e.Post("/seamless/wallet/getuserbalance", handler.UserBalance)
 
 }
 
